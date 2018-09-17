@@ -72,7 +72,6 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
         final String errorMessage = getErrorMessage();
         if (errorMessage != null) {
             promise.reject(errorMessage, errorMessage);
-            ReactNativeFingerprintScannerModule.this.release();
             return;
         }
 
@@ -81,19 +80,34 @@ public class ReactNativeFingerprintScannerModule extends ReactContextBaseJavaMod
             @Override
             public void onSucceed() {
                 promise.resolve(true);
-                ReactNativeFingerprintScannerModule.this.release();
+
             }
 
             @Override
             public void onNotMatch(int availableTimes) {
-                mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                if( availableTimes <= 0 ){
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
+                        .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationLockout");
+
+                }else{
+                    mReactContext.getJSModule(RCTDeviceEventEmitter.class)
                         .emit("FINGERPRINT_SCANNER_AUTHENTICATION", "AuthenticationNotMatch");
+                }
             }
 
             @Override
-            public void onFailed() {
-                promise.reject("AuthenticationFailed", "AuthenticationFailed");
-                ReactNativeFingerprintScannerModule.this.release();
+            public void onFailed(boolean isDeviceLocked) {
+                if(isDeviceLocked){
+                    promise.reject("AuthenticationLockout", "AuthenticationLockout");
+
+                }else{
+                    promise.reject("AuthenticationFailed", "AuthenticationFailed");
+                }
+            }
+
+            @Override
+            public void onStartFailedByDeviceLocked() {
+                // the first start failed because the device was locked temporarily
             }
         });
     }
