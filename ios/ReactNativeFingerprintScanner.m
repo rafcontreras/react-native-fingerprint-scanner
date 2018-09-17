@@ -29,6 +29,30 @@ RCT_EXPORT_METHOD(isSensorAvailable: (RCTResponseSenderBlock)callback)
                 errorReason = @"FingerprintScannerNotEnrolled";
                 break;
 
+            case LAErrorTouchIDLockout:
+                errorReason = @"AuthenticationLockout";
+                break;
+                
+            case LAErrorAuthenticationFailed:
+                errorReason = @"AuthenticationFailed";
+                break;
+                
+            case LAErrorUserCancel:
+                errorReason = @"UserCancel";
+                break;
+                
+            case LAErrorUserFallback:
+                errorReason = @"UserFallback";
+                break;
+                
+            case LAErrorSystemCancel:
+                errorReason = @"SystemCancel";
+                break;
+                
+            case LAErrorPasscodeNotSet:
+                errorReason = @"PasscodeNotSet";
+                break;
+
             default:
                 errorReason = @"FingerprintScannerNotSupported";
                 break;
@@ -88,6 +112,14 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
 
                      case LAErrorTouchIDNotEnrolled:
                          errorReason = @"FingerprintScannerNotEnrolled";
+                         break;
+
+                     case LAErrorTouchIDLockout:
+                         errorReason = @"AuthenticationLockout";
+                         break;
+
+                     case LAErrorPasscodeNotSet:
+                         errorReason = @"PasscodeNotSet";
                          break;
 
                      default:
