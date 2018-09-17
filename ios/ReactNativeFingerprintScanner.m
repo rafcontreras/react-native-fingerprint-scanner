@@ -118,10 +118,6 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                          errorReason = @"AuthenticationLockout";
                          break;
 
-                     case LAErrorPasscodeNotSet:
-                         errorReason = @"PasscodeNotSet";
-                         break;
-
                      default:
                          errorReason = @"FingerprintScannerUnknownError";
                          break;
